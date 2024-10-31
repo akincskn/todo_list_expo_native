@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "212401537692",
+    "project_id": "todo-list-expo-cli",
+    "storage_bucket": "todo-list-expo-cli.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:212401537692:android:8bbcf6d15dc07a73582359",
+        "android_client_info": {
+          "package_name": "com.benimfirebasepaketim"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzGUCAv4PFWem2lLDz9GB3KR2ZU6St7lo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

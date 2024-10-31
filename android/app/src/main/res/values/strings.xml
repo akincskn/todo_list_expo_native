@@ -1,0 +1,4 @@
+<resources>
+  <string name="app_name">todo_list_expo_native</string>
+  <string name="expo_runtime_version">1.0.0</string>
+</resources>
