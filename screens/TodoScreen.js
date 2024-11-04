@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, FlatList, Alert } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, StyleSheet, FlatList, Alert, SafeAreaView } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { addTask, completeTask, removeTask } from './taskSlice';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+
 
 export default function TodoScreen() {
     const [task, setTask] = useState('');
@@ -73,65 +74,51 @@ export default function TodoScreen() {
     };
 
     const sortedTasks = tasks.filter(task => !task.completed).sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
-
+    const item = sortedTasks
     return (
-        <FlatList
-            contentContainerStyle={styles.container}
-            data={sortedTasks}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => (
-                <View style={[styles.taskItem, item.completed && styles.completedItem]}>
-                    <View style={styles.taskContent}>
-                        <Text style={[styles.taskText, item.completed && styles.completedText]}>
-                            {item.value} - {item.category}
-                        </Text>
-                        <Text style={styles.dateText}>
-                            Bitiş Tarihi: {new Date(item.dueDate).toLocaleDateString()}
-                        </Text>
-                        <Text style={styles.dateText}>
-                            Hatırlatma Zamanı: {new Date(item.reminderTime).toLocaleString()}
-                        </Text>
-                    </View>
-                    <View style={styles.actionButtons}>
-                        {item.completed ? (
-                            <Icon name="check-circle" size={24} color="green" />
-                        ) : (
-                            <TouchableOpacity onPress={() => handleCompleteTask(item.id)}>
-                                <Text style={styles.actionText}>Tamamla</Text>
-                            </TouchableOpacity>
-                        )}
-                        <TouchableOpacity onPress={() => handleRemoveTask(item.id)}>
-                            <Text style={styles.actionText}>Sil</Text>
-                        </TouchableOpacity>
-                    </View>
+        <>
+            {/* <View style={[styles.taskItem, item.completed && styles.completedItem]}>
+                <View style={styles.taskContent}>
+                    <Text style={[styles.taskText, item.completed && styles.completedText]}>
+                        {item.value} - {item.category}
+                    </Text>
+                    <Text style={styles.dateText}>
+                        Bitiş Tarihi: {new Date(item.dueDate).toLocaleDateString()}
+                    </Text>
+                    <Text style={styles.dateText}>
+                        Hatırlatma Zamanı: {new Date(item.reminderTime).toLocaleString()}
+                    </Text>
                 </View>
-            )}
-            ListHeaderComponent={
-                <View>
-                    <Text style={styles.header}>Görevlerinizi Planlayın</Text>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Yeni görev ekleyin"
-                        value={task}
-                        onChangeText={setTask}
-                    />
-                    <Picker
-                        selectedValue={selectedCategory}
-                        onValueChange={(itemValue) => setSelectedCategory(itemValue)}
-                        style={styles.picker}
-                    >
-                        <Picker.Item label="Kategori Seç" value="" />
-                        <Picker.Item label="İş" value="iş" />
-                        <Picker.Item label="Spor" value="spor" />
-                        <Picker.Item label="Kişisel" value="kişisel" />
-                        <Picker.Item label="Alışveriş" value="alışveriş" />
-                        <Picker.Item label="Okul" value="okul" />
-
-                    </Picker>
-                    <TouchableOpacity onPress={() => setShowDatePicker(true)}>
-                        <Text style={styles.dateText}>Tarih Seç: {selectedDate.toLocaleDateString()}</Text>
+                <View style={styles.actionButtons}>
+                    {item.completed ? (
+                        <Icon name="check-circle" size={24} color="green" />
+                    ) : (
+                        <TouchableOpacity onPress={() => handleCompleteTask(item.id)}>
+                            <Text style={styles.actionText}>Tamamla</Text>
+                        </TouchableOpacity>
+                    )}
+                    <TouchableOpacity onPress={() => handleRemoveTask(item.id)}>
+                        <Text style={styles.actionText}>Sil</Text>
                     </TouchableOpacity>
-                    {showDatePicker && (
+                </View>
+            </View> */}
+
+            <SafeAreaView style={{ paddingHorizontal: 20, flex: 1 }}>
+                <Text style={styles.header}>Görevlerinizi Planlayın</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Yeni görev ekleyin"
+                    value={task}
+                    onChangeText={setTask}
+                />
+
+                <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+                    <Text style={styles.dateText}>Kategori Seç: {selectedCategory}</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={{ flexDirection: 'row', paddingVertical: 15 }} onPress={() => setShowReminderDatePicker(true)}>
+                    <Text style={styles.dateText}>Hatırlatma Zamanı: {reminderDateTime.toLocaleString()}</Text>
+                    {showReminderDatePicker && (
                         <DateTimePicker
                             value={selectedDate}
                             mode="date"
@@ -139,9 +126,10 @@ export default function TodoScreen() {
                             onChange={onChangeDate}
                         />
                     )}
-                    <TouchableOpacity onPress={() => setShowReminderDatePicker(true)}>
-                        <Text style={styles.dateText}>Hatırlatma Zamanı: {reminderDateTime.toLocaleString()}</Text>
-                    </TouchableOpacity>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={{ flexDirection: 'row', paddingVertical: 15 }} onPress={() => setShowReminderDatePicker(true)}>
+                    <Text style={styles.dateText}>Hatırlatma Zamanı: {reminderDateTime.toLocaleString()}</Text>
                     {showReminderDatePicker && (
                         <DateTimePicker
                             value={reminderDateTime}
@@ -150,20 +138,40 @@ export default function TodoScreen() {
                             onChange={onChangeReminderDate}
                         />
                     )}
-                    {showReminderTimePicker && (
-                        <DateTimePicker
-                            value={reminderDateTime}
-                            mode="time"
-                            display="default"
-                            onChange={onChangeReminderTime}
-                        />
-                    )}
-                    <TouchableOpacity style={styles.addButton} onPress={handleAddTask}>
-                        <Text style={styles.addButtonText}>Görev Ekle</Text>
-                    </TouchableOpacity>
-                </View>
-            }
-        />
+                </TouchableOpacity>
+
+                {showReminderTimePicker && (
+                    <DateTimePicker
+                        value={reminderDateTime}
+                        mode="time"
+                        display="default"
+                        onChange={onChangeReminderTime}
+                    />
+                )}
+                <TouchableOpacity style={styles.addButton} onPress={handleAddTask}>
+                    <Text style={styles.addButtonText}>Görev Ekle</Text>
+                </TouchableOpacity>
+                {showDatePicker && <Picker
+                    selectedValue={selectedCategory}
+                    onValueChange={(itemValue) => {
+                        setSelectedCategory(itemValue)
+                        setShowDatePicker(false)
+                    }}
+                    style={styles.picker}
+                    display={false}
+                >
+                    <Picker.Item label="Kategori Seç" value="" />
+                    <Picker.Item label="İş" value="iş" />
+                    <Picker.Item label="Spor" value="spor" />
+                    <Picker.Item label="Kişisel" value="kişisel" />
+                    <Picker.Item label="Alışveriş" value="alışveriş" />
+                    <Picker.Item label="Okul" value="okul" />
+
+                </Picker>}
+            </SafeAreaView>
+
+        </>
+
     );
 }
 
@@ -207,8 +215,8 @@ const styles = StyleSheet.create({
         paddingVertical: 15,
         borderRadius: 8,
         alignItems: 'center',
-        marginBottom: 20,
         width: '100%',
+
     },
     addButtonText: {
         color: '#fff',
